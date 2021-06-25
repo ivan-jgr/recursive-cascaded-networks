@@ -31,6 +31,19 @@ def regularize_loss(flow):
     return d / 2.0
 
 
+def regularize_loss_3d(flow):
+    """
+    flow has shape (batch, 3, 512, 521, 512)
+    """
+    dy = flow[:, :, 1:, :, :] - flow[:, :, :-1, :, :]
+    dx = flow[:, :, :, 1:, :] - flow[:, :, :, :-1, :]
+    dz = flow[:, :, :, :, 1:] - flow[:, :, :, :, :-1]
+
+    d = torch.mean(dx**2) + torch.mean(dy**2) + torch.mean(dz**2)
+
+    return d / 3.0
+
+
 def dice_loss(fixed_mask, warped):
     """
     Dice similirity loss
@@ -54,6 +67,9 @@ def jacobian_det(flow):
 def total_loss(fixed, moving, flows):
     sim_loss = pearson_correlation(fixed, moving)
     # Regularize all flows
-    reg_loss = sum([regularize_loss(flow) for flow in flows])
+    if len(fixed.size() == 4): #(N, C, H, W)
+        reg_loss = sum([regularize_loss(flow) for flow in flows])
+    else:
+        reg_loss = sum([regularize_loss_3d(flow) for flow in flows])
     return sim_loss + reg_loss
 

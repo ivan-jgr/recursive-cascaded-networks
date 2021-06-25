@@ -8,9 +8,10 @@ class RecursiveCascadeNetwork(nn.Module):
 
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.stems = []
-        self.stems.append(VTNAffineStem())
+        # See note in base_networks.py about the assumption in the image shape
+        self.stems.append(VTNAffineStem(dim=len(im_size)), im_size=im_size[0])
         for i in range(n_cascades):
-            self.stems.append(VTN(flow_multiplier=1.0 / n_cascades))
+            self.stems.append(VTN(dim=len(im_size), flow_multiplier=1.0 / n_cascades))
 
         # Parallelize across all available GPUs
         if torch.cuda.device_count() > 1:
@@ -27,7 +28,7 @@ class RecursiveCascadeNetwork(nn.Module):
         flows = []
         stem_results = []
         # Affine registration
-        flow, W, b, det_loss = self.stems[0](fixed, moving)
+        flow = self.stems[0](fixed, moving)
         stem_results.append(self.reconstruction(moving, flow))
         flows.append(flow)
         for model in self.stems[1:]: # cascades
