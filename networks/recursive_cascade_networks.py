@@ -9,7 +9,7 @@ class RecursiveCascadeNetwork(nn.Module):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.stems = []
         # See note in base_networks.py about the assumption in the image shape
-        self.stems.append(VTNAffineStem(dim=len(im_size)), im_size=im_size[0])
+        self.stems.append(VTNAffineStem(dim=len(im_size), im_size=im_size[0]))
         for i in range(n_cascades):
             self.stems.append(VTN(dim=len(im_size), flow_multiplier=1.0 / n_cascades))
 
