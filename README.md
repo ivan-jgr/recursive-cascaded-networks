@@ -1,4 +1,4 @@
-<span style="color:red"> This is a pytorch version of the [original tensorflow implementation](https://github.com/microsoft/Recursive-Cascaded-Networks) and for now only works with 2D images. </span>
+<span style="color:red"> This is a pytorch version of the [original tensorflow implementation](https://github.com/microsoft/Recursive-Cascaded-Networks). </span>
 
 # Recursive Cascaded Networks for Unsupervised Medical Image Registration
 
@@ -13,13 +13,17 @@ Paper link: [[arXiv]](https://arxiv.org/pdf/1907.12353)
 
 This repository includes:
 
-* The recursive cascade network implementation with VTN as a base network for 2D images.
+* The recursive cascade network implementation with VTN as a base network for 3D and 2D images.
 
 ## Training
 
 You need to define your own loader based on your dataset.
 
 `python train.py -b BATCH_SIZE -n NUMBER_OF_CASCADES -e EPOCHS -i ITERS -iv VAL_ITERS -c FREQ_FOR_SAVE_MODEL -f SAMPLE_FOR VISUALIZATION`
+
+We generate some visualizations during training that you can see in `train.py`.
+
+<img src='./images/visualization.png' width=100%>
 
 
 ## Acknowledgement
